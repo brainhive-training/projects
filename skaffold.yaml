@@ -1,0 +1,14 @@
+apiVersion: skaffold/v4beta7
+kind: Config
+metadata:
+  name: project-api
+build:
+  artifacts:
+    - image: registry.local:5000/project-api
+      docker:
+        dockerfile: Dockerfile
+manifests:
+  rawYaml:
+    - .k8s/deployment.yml
+    - .k8s/service.yml
+    - .k8s/ingress.yml

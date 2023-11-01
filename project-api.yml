@@ -1,0 +1,177 @@
+openapi: 3.1.0
+info:
+  title: Project API
+  version: 0.0.1
+  license:
+    name: MIT
+    identifier: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: http://localhost:8000
+components:
+  schemas:
+    UpdateProject:
+      type: object
+      properties:
+        projectName:
+          type: string
+        status:
+          type: string
+          enum:
+            - active
+            - inactive
+        ownerName:
+          type: string
+    CreateProject:
+      type: object
+      example:
+        projectName: Project 1
+        dCode: "D001"
+        ownerName: John Doe
+      required:
+        - projectName
+        - dCode
+        - ownerName
+      properties:
+        projectName:
+          type: string
+        dCode:
+          type: string
+        ownerName:
+          type: string
+        description:
+          type: string
+    Project:
+      type: object
+      example:
+        pCode: "P001"
+        projectName: Project 1
+        dCode: "D001"
+        status: active
+        ownerName: John Doe
+      required:
+        - pCode
+        - projectName
+        - dCode
+        - status
+        - ownerName
+      properties:
+        pCode:
+          type: string
+        projectName:
+          type: string
+        dCode:
+          type: string
+        status:
+          type: string
+          enum:
+            - active
+            - inactive
+    Error:
+      type: object
+      example:
+        message: Project not found
+      required:
+        - message
+      properties:
+        message:
+          type: string
+
+paths:
+  /api/projects:
+    post:
+      summary: Create a new project
+      security: []
+      operationId: createProject
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateProject"
+      responses:
+        "201":
+          description: Project created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+        "400":
+          description: Invalid project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      summary: Get projects
+      security: []
+      operationId: listProjects
+      responses:
+        "200":
+          description: Projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Project"
+        "404":
+          description: project not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/projects/{code}:
+    patch:
+      summary: Update project
+      security: []
+      operationId: updateProject
+      parameters:
+        - name: code
+          in: path
+          description: Project code
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProject"
+      responses:
+        "200":
+          description: Project updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+        "400":
+          description: Invalid project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      summary: Get project by pCode
+      security: []
+      operationId: getProject
+      parameters:
+        - name: code
+          in: path
+          description: Project code
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Project details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+        "404":
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
