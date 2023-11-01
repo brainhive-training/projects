@@ -32,14 +32,15 @@ func (s *Service) ListProjects(ctx *gin.Context) {
 	var rawProjects []DBProject
 	res := db.Find(&rawProjects)
 	if res.RowsAffected > 0 {
-		projects := make([]map[string]any, len(rawProjects))
+		projects := make([]Project, len(rawProjects))
 		for r := 0; r < len(rawProjects); r++ {
-			projects[r] = gin.H{
-				"dCode":       rawProjects[r].DCode,
-				"pCode":       rawProjects[r].PCode,
-				"status":      rawProjects[r].Status,
-				"ownerName":   rawProjects[r].OwnerName,
-				"projectName": rawProjects[r].ProjectName,
+			ownerName := rawProjects[r].OwnerName
+			projects[r] = Project{
+				DCode:       rawProjects[r].DCode,
+				PCode:       fmt.Sprintf("P%03d", rawProjects[r].ID),
+				Status:      ProjectStatus(rawProjects[r].Status),
+				OwnerName:   &ownerName,
+				ProjectName: rawProjects[r].ProjectName,
 			}
 		}
 		ctx.JSON(200, projects)
@@ -63,25 +64,18 @@ func (s *Service) CreateProject(ctx *gin.Context) {
 	}
 
 	if res := db.Create(query); res.RowsAffected > 0 {
-		ctx.JSON(200, gin.H{
-			"dCode":       createProject.DCode,
-			"pCode":       fmt.Sprintf("P%03d", query.ID),
-			"status":      query.Status,
-			"ownerName":   createProject.OwnerName,
-			"projectName": createProject.ProjectName,
+		ctx.JSON(201, Project{
+			DCode:       query.DCode,
+			PCode:       fmt.Sprintf("P%03d", query.ID),
+			ProjectName: query.ProjectName,
+			OwnerName:   &query.OwnerName,
+			Status:      ProjectStatus(query.Status),
 		})
+
 	} else {
 		ctx.JSON(400, gin.H{"msg": "Project not found"})
 		return
 	}
-
-	ctx.JSON(201, Project{
-		DCode:       query.DCode,
-		PCode:       fmt.Sprintf("P%03d", query.ID),
-		ProjectName: query.ProjectName,
-		OwnerName:   &query.OwnerName,
-		Status:      ProjectStatus(query.Status),
-	})
 }
 
 func (s *Service) GetProject(ctx *gin.Context, code string) {
@@ -94,12 +88,12 @@ func (s *Service) GetProject(ctx *gin.Context, code string) {
 	res := db.First(&rawProject, "id = ?", c)
 	if res.RowsAffected > 0 {
 		//projects := make([]map[string]any, len(rawProjects))
-		ctx.JSON(200, gin.H{
-			"dCode":       rawProject.DCode,
-			"pCode":       rawProject.PCode,
-			"status":      rawProject.Status,
-			"ownerName":   rawProject.OwnerName,
-			"projectName": rawProject.ProjectName,
+		ctx.JSON(200, Project{
+			DCode:       rawProject.DCode,
+			PCode:       fmt.Sprintf("P%03d", rawProject.ID),
+			ProjectName: rawProject.ProjectName,
+			OwnerName:   &rawProject.OwnerName,
+			Status:      ProjectStatus(rawProject.Status),
 		})
 	} else {
 		ctx.JSON(404, gin.H{

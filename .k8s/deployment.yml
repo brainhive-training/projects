@@ -20,3 +20,9 @@ spec:
         image: project-api
         ports:
         - containerPort: 8080
+        env:
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: project-db-app
+                key: uri
