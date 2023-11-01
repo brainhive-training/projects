@@ -4,7 +4,7 @@ metadata:
   name: project-api
 build:
   artifacts:
-    - image: registry.local:5000/project-api
+    - image: project-api
       docker:
         dockerfile: Dockerfile
 manifests:

@@ -11,6 +11,59 @@ import (
 	"github.com/oapi-codegen/runtime"
 )
 
+// Defines values for ProjectStatus.
+const (
+	ProjectStatusActive   ProjectStatus = "active"
+	ProjectStatusInactive ProjectStatus = "inactive"
+)
+
+// Defines values for UpdateProjectStatus.
+const (
+	UpdateProjectStatusActive   UpdateProjectStatus = "active"
+	UpdateProjectStatusInactive UpdateProjectStatus = "inactive"
+)
+
+// CreateProject defines model for CreateProject.
+type CreateProject struct {
+	DCode       string  `json:"dCode"`
+	Description *string `json:"description,omitempty"`
+	OwnerName   string  `json:"ownerName"`
+	ProjectName string  `json:"projectName"`
+}
+
+// Error defines model for Error.
+type Error struct {
+	Message string `json:"message"`
+}
+
+// Project defines model for Project.
+type Project struct {
+	DCode       string        `json:"dCode"`
+	OwnerName   *string       `json:"ownerName,omitempty"`
+	PCode       string        `json:"pCode"`
+	ProjectName string        `json:"projectName"`
+	Status      ProjectStatus `json:"status"`
+}
+
+// ProjectStatus defines model for Project.Status.
+type ProjectStatus string
+
+// UpdateProject defines model for UpdateProject.
+type UpdateProject struct {
+	OwnerName   *string              `json:"ownerName,omitempty"`
+	ProjectName *string              `json:"projectName,omitempty"`
+	Status      *UpdateProjectStatus `json:"status,omitempty"`
+}
+
+// UpdateProjectStatus defines model for UpdateProject.Status.
+type UpdateProjectStatus string
+
+// CreateProjectJSONRequestBody defines body for CreateProject for application/json ContentType.
+type CreateProjectJSONRequestBody = CreateProject
+
+// UpdateProjectJSONRequestBody defines body for UpdateProject for application/json ContentType.
+type UpdateProjectJSONRequestBody = UpdateProject
+
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 	// Get projects

@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
       - name: project-api
-        image: registry.local:5000/project-api
+        image: project-api
         ports:
         - containerPort: 8080

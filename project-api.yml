@@ -54,7 +54,6 @@ components:
         - projectName
         - dCode
         - status
-        - ownerName
       properties:
         pCode:
           type: string
@@ -67,6 +66,8 @@ components:
           enum:
             - active
             - inactive
+        ownerName:
+          type: string
     Error:
       type: object
       example:
