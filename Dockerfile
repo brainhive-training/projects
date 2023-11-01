@@ -6,7 +6,7 @@ COPY . .
 
 RUN go mod download
 
-RUN go build -o /build/project-api .
+RUN go build -o /build/project-api ./cmd/project
 
 FROM gcr.io/distroless/static-debian11
 
